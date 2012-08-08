@@ -1,0 +1,4 @@
+#'
+#' @useDynLib jurr
+#'
+NULL
