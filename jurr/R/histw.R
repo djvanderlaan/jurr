@@ -1,41 +1,87 @@
-# Maakt een gewogen histogram
-#
-# Versie: 20 mei 2009
 
-histw <- function(y, borders, w = rep(1, length(y)), centers=c(), count=0, as.list=TRUE) {
-  if (count > 0) {
-    borders = seq(min(y),max(y)+max((max(y)-min(y))/100/count,.Machine$double.eps),length.out=count)
-  }
-  if (length(centers) > 1) {
-    nc <- length(centers)
-    d0 <- centers[2]-centers[1]
-    d1 <- centers[nc]-centers[nc-1]
-    borders <- c(centers[1]-d0/2, (centers[2:nc] + centers[1:(nc-1)])/2, centers[nc]+d1/2)
-  }
-  n <- length(borders)-1;
-  if (n == 0) stop("The size of borders should be > 1.")
-  h <- .C("histw_c", h=double(n+2), 
-    as.double(y),
-    as.double(w),
-    as.integer(length(y)),
-    as.double(borders),
-    as.integer(length(borders)))$h  
-  underflow <- h[1]
-  overflow  <- h[length(h)]
-  h         <- h[2:(length(h)-1)]
-  if (underflow != 0) warning("There are observations smaller than the lower border.");
-  if (overflow != 0) warning("There are observations larger than the upper border.");
-  if (as.list) {
-    centers   <- (borders[1:n+1]+borders[1:n])/2
-    result    <- list(h=h, underflow=underflow, overflow=overflow, centers=centers, borders=borders)
-    class(result) <- "histw"
-    return(result)
-  } else {
-    return(h)
-  }
+#' Compute weighted histogram
+#'
+#' @param x vector of values for which the histogram needs to be calculated.
+#' @param borders the borders of the bins of the histogram
+#' @param w (optional) vector with same length as x giving the weight of each 
+#'     observation in x
+#' @param centers (optional) a vector giving the centers of the bins. If given
+#'     \code{borders} and \code{count} are ignored. The borders of the bins are 
+#'     placed midway between the centers.
+#' @param count (optional) the number of bins in the histogram. If given
+#'     \code{borders} is ignored. The bins are spaced evenly between the maximum
+#'     and minimum x-value.
+#' @param as_list (optional) if TRUE a list is returned with the histogram,
+#'     overflow, underflow, centers and borders. Otherwise, only the histogram
+#'     is returned.
+#'
+#' @details
+#' For every observation \code{x[i]} \code{w[i]} is added to the bin in which
+#' the observation falls. 
+#'
+#' @return
+#' In case of \code{as_list=TRUE} an object of type \code{histw} is returned
+#' this object has the following elements: 
+#' \describe{
+#'   \item{h} the histogram: a numeric vector with the counts in each bin
+#'   \item{underflow} the number of counts smaller than the lowest bin border
+#'   \item{overflow} the number of counts larger than the largest bin border
+#'   \item{centers} the centers of the bins
+#'   \item{borders} the borders of the bins
+#' }
+#' In case of \code{as_list=FALSE} only the vector \code{h} mentioned above is
+#' returned.
+#'
+#' @seealso \code{\link{hist}}, \code{\link{histw2}}
+#'
+#' @examples
+#' x <- rnorm(100)
+#' h <- histw(rnorm(100), w=runif(100, 0, 1), borders=-2:2)
+#' print(h)
+#' plot(h)
+#'
+#' @export
+histw <- function(x, borders, w = rep(1, length(x)), centers=c(), count=0, 
+        as_list=TRUE) {
+    if (count > 0) {
+        borders = seq(min(x),
+            max(x)+max((max(x)-min(x))/100/count,.Machine$double.eps),
+            length.out=count)
+    }
+    if (length(centers) > 1) {
+        nc <- length(centers)
+        d0 <- centers[2]-centers[1]
+        d1 <- centers[nc]-centers[nc-1]
+        borders <- c(centers[1]-d0/2, 
+            (centers[2:nc] + centers[1:(nc-1)])/2, centers[nc]+d1/2)
+    }
+    n <- length(borders)-1;
+    if (n == 0) stop("The size of borders should be > 1.")
+    h <- .C("histw_c", h=double(n+2), 
+        as.double(x),
+        as.double(w),
+        as.integer(length(x)),
+        as.double(borders),
+        as.integer(length(borders)))$h  
+    underflow <- h[1]
+    overflow  <- h[length(h)]
+    h         <- h[2:(length(h)-1)]
+    if (underflow != 0)
+        warning("There are observations smaller than the lower border.");
+    if (overflow != 0) 
+        warning("There are observations larger than the upper border.");
+    if (as_list) {
+        centers   <- (borders[1:n+1]+borders[1:n])/2
+        result    <- list(h=h, underflow=underflow, overflow=overflow, 
+            centers=centers, borders=borders)
+        class(result) <- "histw"
+        return(result)
+    } else {
+        return(h)
+    }
 }
 
-histw2 <- function(x, y, borders.x, borders.y, w = rep(1, length(y)), centers.x=c(), centers.y=c(), count.x=0, count.y=0, as.list=TRUE) {
+histw2 <- function(x, y, borders.x, borders.y, w = rep(1, length(y)), centers.x=c(), centers.y=c(), count.x=0, count.y=0, as_list=TRUE) {
   if (count.x > 0) {
     borders.x = seq(min(x),max(x)+max((max(x)-min(x))/100/count.x,.Machine$double.eps),length.out=count.x)
   }
@@ -73,7 +119,7 @@ histw2 <- function(x, y, borders.x, borders.y, w = rep(1, length(y)), centers.x=
   h         <- h[2:(n.y+1), 2:(n.x+1)]
   if (any(underflow$x != 0) || any(underflow$y != 0)) warning("There are observations smaller than the lower borders.");
   if (any(overflow$x != 0) || any(overflow$y != 0)) warning("There are observations larger than the upper borders.");
-  if (as.list) {
+  if (as_list) {
     centers.x   <- (borders.x[1:n.x+1]+borders.x[1:n.x])/2
     centers.y   <- (borders.y[1:n.y+1]+borders.y[1:n.y])/2
     result      <- list(h=h, underflow=underflow, overflow=overflow, centers.x=centers.x, 
