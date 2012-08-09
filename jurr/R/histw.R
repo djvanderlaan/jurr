@@ -81,6 +81,61 @@ histw <- function(x, borders, w = rep(1, length(x)), centers=c(), count=0,
     }
 }
 
+#' Compute weighted two dimensional histogram
+#'
+#' @param x vector of x-coordinates for points for which the histogram needs to
+#'     be calculated.
+#' @param y vector of y-coordinates for points for which the histogram needs to
+#'     be calculated.
+#' @param borders.x the borders in the x-direction of the bins of the histogram
+#' @param borders.y the borders in the y-direction of the bins of the histogram
+#' @param w (optional) vector with same length as x and y giving the weight of
+#'     each point
+#' @param centers.x (optional) a vector giving the x-coordinates of centers of
+#'     the bins. If given \code{borders.x} and \code{count.x} are ignored. The
+#'     borders of the bins are  placed midway between the centers.
+#' @param centers.y (optional) a vector giving the y-coordinates of centers of
+#'     the bins. If given \code{borders.y} and \code{count.y} are ignored. The
+#'     borders of the bins are  placed midway between the centers.
+#' @param count.x (optional) the number of bins in the x-direction of the
+#'     histogram. If given \code{borders.x} is ignored. The bins are spaced
+#'     evenly between the maximum and minimum x-value.
+#' @param count.y (optional) the number of bins in the y-direction of the
+#'     histogram. If given \code{borders.y} is ignored. The bins are spaced
+#'     evenly between the maximum and minimum y-value.
+#' @param as_list (optional) if TRUE a list is returned with the histogram,
+#'     overflow, underflow, centers and borders. Otherwise, only the histogram
+#'     is returned.
+#'
+#' @details
+#' For every observation (\code{x[i]},\code{y[i]}) code{w[i]} is added to the
+#' bin in which the observation falls. 
+#'
+#' @return
+#' In case of \code{as_list=TRUE} an object of type \code{histw2} is returned
+#' this object has the following elements: 
+#' \describe{
+#'   \item{h} the histogram: an array with the counts in each bin
+#'   \item{underflow.x/underflow.y} the number of counts smaller than the lowest
+#'       bin border.
+#'   \item{overflow.x/overflow.y} the number of counts larger than the largest
+#'       bin border.
+#'   \item{centers.x/centers.y} the centers of the bins
+#'   \item{borders.x/borders.y} the borders of the bins
+#' }
+#' In case of \code{as_list=FALSE} only the vector \code{h} mentioned above is
+#' returned.
+#'
+#' @seealso \code{\link{hist}}, \code{\link{histw}}
+#'
+#' @examples
+#' x <- rnorm(1000)
+#' y <- rnorm(1000)
+#' h <- histw2(x, y, w=runif(100, 0, 1), borders.x=-2:2, borders.y=-2:2)
+#' print(h)
+#' plot(h)
+#'
+#' @export
 histw2 <- function(x, y, borders.x, borders.y, w = rep(1, length(y)), centers.x=c(), centers.y=c(), count.x=0, count.y=0, as_list=TRUE) {
   if (count.x > 0) {
     borders.x = seq(min(x),max(x)+max((max(x)-min(x))/100/count.x,.Machine$double.eps),length.out=count.x)
@@ -182,14 +237,23 @@ slice <- function(hist, dimension, bin) {
 }
 
 
+#' Plot histogram created by \code{histw}
+#'
+#' @S3method plot histw
 plot.histw <- function(hist, ...) {
   histplot(hist$borders, hist$h, ...)
 }
 
+#' Plot histogram created by \code{histw2}
+#'
+#' @S3method plot histw2
 plot.histw2 <- function(hist, ...) {
   histplot2(hist$h, borders.x=h$borders.x, borders.y=h$borders.y, ...)
 }
 
+#' Print histogram created by \code{histw}
+#'
+#' @S3method print histw
 print.histw <- function(hist) {
   w       <- 15
   h       <- format(hist$h, width=w)
@@ -211,6 +275,9 @@ print.histw <- function(hist) {
   cat("\n")
 }
 
+#' Print histogram created by \code{histw2}
+#'
+#' @S3method print histw2
 print.histw2 <- function(hist) {
   wy        <- 15
   wx        <- max(nchar(format(hist$h)), nchar(format(hist$borders.x)))  
