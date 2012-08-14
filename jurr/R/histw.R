@@ -23,11 +23,11 @@
 #' In case of \code{as_list=TRUE} an object of type \code{histw} is returned
 #' this object has the following elements: 
 #' \describe{
-#'   \item{h} the histogram: a numeric vector with the counts in each bin
-#'   \item{underflow} the number of counts smaller than the lowest bin border
-#'   \item{overflow} the number of counts larger than the largest bin border
-#'   \item{centers} the centers of the bins
-#'   \item{borders} the borders of the bins
+#'   \item{h}{the histogram: a numeric vector with the counts in each bin}
+#'   \item{underflow}{the number of counts smaller than the lowest bin border}
+#'   \item{overflow}{the number of counts larger than the largest bin border}
+#'   \item{centers}{the centers of the bins}
+#'   \item{borders}{the borders of the bins}
 #' }
 #' In case of \code{as_list=FALSE} only the vector \code{h} mentioned above is
 #' returned.
@@ -87,21 +87,21 @@ histw <- function(x, borders, w = rep(1, length(x)), centers=c(), count=0,
 #'     be calculated.
 #' @param y vector of y-coordinates for points for which the histogram needs to
 #'     be calculated.
-#' @param borders.x the borders in the x-direction of the bins of the histogram
-#' @param borders.y the borders in the y-direction of the bins of the histogram
+#' @param borders_x the borders in the x-direction of the bins of the histogram
+#' @param borders_y the borders in the y-direction of the bins of the histogram
 #' @param w (optional) vector with same length as x and y giving the weight of
 #'     each point
-#' @param centers.x (optional) a vector giving the x-coordinates of centers of
-#'     the bins. If given \code{borders.x} and \code{count.x} are ignored. The
+#' @param centers_x (optional) a vector giving the x-coordinates of centers of
+#'     the bins. If given \code{borders_x} and \code{count_x} are ignored. The
 #'     borders of the bins are  placed midway between the centers.
-#' @param centers.y (optional) a vector giving the y-coordinates of centers of
-#'     the bins. If given \code{borders.y} and \code{count.y} are ignored. The
+#' @param centers_y (optional) a vector giving the y-coordinates of centers of
+#'     the bins. If given \code{borders_y} and \code{count_y} are ignored. The
 #'     borders of the bins are  placed midway between the centers.
-#' @param count.x (optional) the number of bins in the x-direction of the
-#'     histogram. If given \code{borders.x} is ignored. The bins are spaced
+#' @param count_x (optional) the number of bins in the x-direction of the
+#'     histogram. If given \code{borders_x} is ignored. The bins are spaced
 #'     evenly between the maximum and minimum x-value.
-#' @param count.y (optional) the number of bins in the y-direction of the
-#'     histogram. If given \code{borders.y} is ignored. The bins are spaced
+#' @param count_y (optional) the number of bins in the y-direction of the
+#'     histogram. If given \code{borders_y} is ignored. The bins are spaced
 #'     evenly between the maximum and minimum y-value.
 #' @param as_list (optional) if TRUE a list is returned with the histogram,
 #'     overflow, underflow, centers and borders. Otherwise, only the histogram
@@ -115,13 +115,13 @@ histw <- function(x, borders, w = rep(1, length(x)), centers=c(), count=0,
 #' In case of \code{as_list=TRUE} an object of type \code{histw2} is returned
 #' this object has the following elements: 
 #' \describe{
-#'   \item{h} the histogram: an array with the counts in each bin
-#'   \item{underflow.x/underflow.y} the number of counts smaller than the lowest
-#'       bin border.
-#'   \item{overflow.x/overflow.y} the number of counts larger than the largest
-#'       bin border.
-#'   \item{centers.x/centers.y} the centers of the bins
-#'   \item{borders.x/borders.y} the borders of the bins
+#'   \item{h}{the histogram: an array with the counts in each bin}
+#'   \item{underflow}{a list with the number of counts smaller than the lowest
+#'       bin border.}
+#'   \item{overflow}{a list with the number of counts smaller than the lowest
+#'       bin border.}
+#'   \item{centers_x/centers_y}{the centers of the bins}
+#'   \item{borders_x/borders_y}{the borders of the bins}
 #' }
 #' In case of \code{as_list=FALSE} only the vector \code{h} mentioned above is
 #' returned.
@@ -131,113 +131,123 @@ histw <- function(x, borders, w = rep(1, length(x)), centers=c(), count=0,
 #' @examples
 #' x <- rnorm(1000)
 #' y <- rnorm(1000)
-#' h <- histw2(x, y, w=runif(100, 0, 1), borders.x=-2:2, borders.y=-2:2)
+#' h <- histw2(x, y, w=runif(1000, 0, 1), borders_x=-2:2, borders_y=-2:2)
 #' print(h)
 #' plot(h)
 #'
 #' @export
-histw2 <- function(x, y, borders.x, borders.y, w = rep(1, length(y)), centers.x=c(), centers.y=c(), count.x=0, count.y=0, as_list=TRUE) {
-  if (count.x > 0) {
-    borders.x = seq(min(x),max(x)+max((max(x)-min(x))/100/count.x,.Machine$double.eps),length.out=count.x)
-  }
-  if (count.y > 0) {
-    borders.y = seq(min(y),max(y)+max((max(y)-min(y))/100/count.y,.Machine$double.eps),length.out=count.y)
-  }
-  if (length(centers.x) > 1) {
-    nc <- length(centers.x)
-    d0 <- centers.x[2]-centers.x[1]
-    d1 <- centers.x[nc]-centers.x[nc-1]
-    borders.x <- c(centers.x[1]-d0/2, (centers.x[2:nc] + centers.x[1:(nc-1)])/2, centers.x[nc]+d1/2)
-  }
-  if (length(centers.y) > 1) {
-    nc <- length(centers.y)
-    d0 <- centers.y[2]-centers.y[1]
-    d1 <- centers.y[nc]-centers.y[nc-1]
-    borders.y <- c(centers.y[1]-d0/2, (centers.y[2:nc] + centers.y[1:(nc-1)])/2, centers.y[nc]+d1/2)
-  }
-  n.x <- length(borders.x)-1;
-  n.y <- length(borders.y)-1;
-  if (n.x == 0) stop("The size of x-borders should be > 1.")
-  if (n.y == 0) stop("The size of y-borders should be > 1.")
-  h <- .C("histw2_c", h=double((n.x+2)*(n.y+2)), 
-    as.double(x),
-    as.double(y),
-    as.double(w),
-    as.integer(length(x)),
-    as.double(borders.x),
-    as.integer(length(borders.x)),
-    as.double(borders.y),
-    as.integer(length(borders.y)))$h  
-  h         <- t(array(h, dim=c(n.x+2, n.y+2)))  
-  underflow <- list(x=h[,1], y=h[1,])
-  overflow  <- list(x=h[,n.x+2], y=h[n.y+2,])
-  h         <- h[2:(n.y+1), 2:(n.x+1)]
-  if (any(underflow$x != 0) || any(underflow$y != 0)) warning("There are observations smaller than the lower borders.");
-  if (any(overflow$x != 0) || any(overflow$y != 0)) warning("There are observations larger than the upper borders.");
-  if (as_list) {
-    centers.x   <- (borders.x[1:n.x+1]+borders.x[1:n.x])/2
-    centers.y   <- (borders.y[1:n.y+1]+borders.y[1:n.y])/2
-    result      <- list(h=h, underflow=underflow, overflow=overflow, centers.x=centers.x, 
-	borders.x=borders.x, centers.y=centers.y, borders.y=borders.y)
-    class(result) <- "histw2"
-    return(result)
-  } else {
-    return(h)
-  }
+histw2 <- function(x, y, borders_x, borders_y, w = rep(1, length(y)), 
+        centers_x=c(), centers_y=c(), count_x=0, count_y=0, as_list=TRUE) {
+    if (count_x > 0) {
+        borders_x = seq(min(x),max(x)+max((max(x)-min(x))/100/count_x,
+            .Machine$double.eps),length.out=count_x)
+    }
+    if (count_y > 0) {
+        borders_y = seq(min(y),max(y)+max((max(y)-min(y))/100/count_y,
+            .Machine$double.eps),length.out=count_y)
+    }
+    if (length(centers_x) > 1) {
+        nc <- length(centers_x)
+        d0 <- centers_x[2]-centers_x[1]
+        d1 <- centers_x[nc]-centers_x[nc-1]
+        borders_x <- c(centers_x[1]-d0/2, 
+            (centers_x[2:nc] + centers_x[1:(nc-1)])/2, centers_x[nc]+d1/2)
+    }
+    if (length(centers_y) > 1) {
+        nc <- length(centers_y)
+        d0 <- centers_y[2]-centers_y[1]
+        d1 <- centers_y[nc]-centers_y[nc-1]
+        borders_y <- c(centers_y[1]-d0/2, 
+            (centers_y[2:nc] + centers_y[1:(nc-1)])/2, centers_y[nc]+d1/2)
+    }
+    n_x <- length(borders_x)-1;
+    n_y <- length(borders_y)-1;
+    if (n_x == 0) stop("The size of x-borders should be > 1.")
+    if (n_y == 0) stop("The size of y-borders should be > 1.")
+    h <- .C("histw2_c", h=double((n_x+2)*(n_y+2)), 
+        as.double(x),
+        as.double(y),
+        as.double(w),
+        as.integer(length(x)),
+        as.double(borders_x),
+        as.integer(length(borders_x)),
+        as.double(borders_y),
+        as.integer(length(borders_y)))$h  
+    h         <- t(array(h, dim=c(n_x+2, n_y+2)))  
+    underflow <- list(x=h[,1], y=h[1,])
+    overflow  <- list(x=h[,n_x+2], y=h[n_y+2,])
+    h         <- h[2:(n_y+1), 2:(n_x+1)]
+    if (any(underflow$x != 0) || any(underflow$y != 0)) warning("There are observations smaller than the lower borders.");
+    if (any(overflow$x != 0) || any(overflow$y != 0)) warning("There are observations larger than the upper borders.");
+    if (as_list) {
+        centers_x   <- (borders_x[1:n_x+1]+borders_x[1:n_x])/2
+        centers_y   <- (borders_y[1:n_y+1]+borders_y[1:n_y])/2
+        result      <- list(h=h, underflow=underflow, overflow=overflow, centers_x=centers_x, 
+            borders_x=borders_x, centers_y=centers_y, borders_y=borders_y)
+        class(result) <- "histw2"
+        return(result)
+    } else {
+        return(h)
+    }
 }
 
+
+#' Create a projection of a 2-dimensional histogram
+#'
+#' @param hist an object of type \code{\link{histw2}}
+#' @param dimension the dimension over which the projection should be 
+#'     calculated. This can be either 1/'x' or 2/'y'. This is the dimension 
+#'     over which the projection should be calculated.
+#'
+#' @return
+#' The result is an object of type \code{\link{histw}}
+#'
+#' @examples
+#' x <- rnorm(1000)
+#' y <- rnorm(1000)
+#' # Create 2-dimensional histogram
+#' h2 <- histw2(x, y, borders_x=-3:3, borders_y=-3:3)
+#' # Create projection
+#' p <- project(h2, 'y')
+#' # This should be the same as the 1 dimensional histogram
+#' h1 <- histw(x, borders=-3:3)
+#' 
+#' plot(h1, col="steelblue")
+#' plot(p, col=NA, border="black", add=TRUE)
+#' 
+#' @export
 project <- function(hist, dimension) {
-  if (!is(hist, "histw2")) stop("Expecting an object of type histw2 as first argument. Got something else.")
+  if (!is(hist, "histw2")) stop("Expecting an object of type histw2 as first ",
+      "argument. Got something else.")
   if (dimension == 1 || dimension == 'x') {
-    h         <- apply(hist$h, 1, sum)
-    h         <- h + hist$underflow$x[2:(length(hist$underflow$x)-1)] + 
-        hist$overflow$x[2:(length(hist$overflow$x)-1)]
-    underflow <- sum(hist$underflow$y)
-    overflow  <- sum(hist$overflow$y)
-    centers <- hist$centers.y
-    borders <- hist$borders.y  
+      h         <- apply(hist$h, 1, sum)
+      h         <- h + hist$underflow$x[2:(length(hist$underflow$x)-1)] + 
+          hist$overflow$x[2:(length(hist$overflow$x)-1)]
+      underflow <- sum(hist$underflow$y)
+      overflow  <- sum(hist$overflow$y)
+      centers <- hist$centers_y
+      borders <- hist$borders_y  
   } else if (dimension == 2 || dimension == 'y') {
-    h         <- apply(hist$h, 2, sum)
-    h         <- h + hist$underflow$y[2:(length(hist$underflow$y)-1)] + 
-        hist$overflow$y[2:(length(hist$overflow$y)-1)]
-    underflow <- sum(hist$underflow$x)
-    overflow  <- sum(hist$overflow$x)
-    centers <- hist$centers.x
-    borders <- hist$borders.x  
+      h         <- apply(hist$h, 2, sum)
+      h         <- h + hist$underflow$y[2:(length(hist$underflow$y)-1)] + 
+          hist$overflow$y[2:(length(hist$overflow$y)-1)]
+      underflow <- sum(hist$underflow$x)
+      overflow  <- sum(hist$overflow$x)
+      centers <- hist$centers_x
+      borders <- hist$borders_x  
   } else {
-    stop("Dimension should be 1 or 2, or 'x' or 'y'.")
+      stop("Dimension should be 1 or 2, or 'x' or 'y'.")
   }
-  result <- list(h=h, underflow=underflow, overflow=overflow, centers=centers, borders=borders)
+  result <- list(h=h, underflow=underflow, overflow=overflow, centers=centers, 
+      borders=borders)
   class(result) <- "histw"  
   return(result)
 }
-
-slice <- function(hist, dimension, bin) {
-  if (!is(hist, "histw2")) stop("Expecting an object of type histw2 as first argument. Got something else.")
-  if (dimension == 1 || dimension == 'x') {
-    if (bin < 1 || bin > length(hist$centers.x)) stop("Invalid bin")
-    h         <- hist$h[ ,bin]
-    underflow <- hist$underflow$y[bin+1]
-    overflow  <- hist$overflow$y[bin+1]  
-    centers   <- hist$centers.y
-    borders   <- hist$borders.y  
-  } else if (dimension == 2 || dimension == 'y') {
-    if (bin < 1 || bin > length(hist$centers.y)) stop("Invalid bin")
-    h         <- hist$h[bin, ]
-    underflow <- hist$underflow$x[bin+1]
-    overflow  <- hist$overflow$x[bin+1]  
-    centers   <- hist$centers.x
-    borders   <- hist$borders.x  
-  } else {
-    stop("Dimension should be 1 or 2, or 'x' or 'y'.")
-  }
-  result <- list(h=h, underflow=underflow, overflow=overflow, centers=centers, borders=borders)
-  class(result) <- "histw"  
-  return(result)
-}
-
 
 #' Plot histogram created by \code{histw}
+#'
+#' @param hist an object of type \code{\link{histw}}
+#' @param ... additional arguments are passed on to \code{\link{histplot}}
 #'
 #' @S3method plot histw
 plot.histw <- function(hist, ...) {
@@ -246,12 +256,15 @@ plot.histw <- function(hist, ...) {
 
 #' Plot histogram created by \code{histw2}
 #'
+#' @param hist an object of type \code{\link{histw2}}
+#' @param ... additional arguments are passed on to \code{\link{histplot2}}
+#'
 #' @S3method plot histw2
 plot.histw2 <- function(hist, ...) {
-  histplot2(hist$h, borders.x=h$borders.x, borders.y=h$borders.y, ...)
+  histplot2(hist$h, borders_x=hist$borders_x, borders_y=hist$borders_y, ...)
 }
 
-#' Print histogram created by \code{histw}
+#' Print histogram created by \code{\link{histw}}
 #'
 #' @S3method print histw
 print.histw <- function(hist) {
@@ -275,42 +288,43 @@ print.histw <- function(hist) {
   cat("\n")
 }
 
-#' Print histogram created by \code{histw2}
+#' Print histogram created by \code{\link{histw2}}
 #'
 #' @S3method print histw2
 print.histw2 <- function(hist) {
   wy        <- 15
-  wx        <- max(nchar(format(hist$h)), nchar(format(hist$borders.x)))  
+  wx        <- max(nchar(format(hist$h)), nchar(format(hist$borders_x)))  
   h         <- format(hist$h, width=wx)
-  borders.x <- format(hist$borders.x, width=wx)  
-  borders.y <- format(hist$borders.y, width=wy)  
-  bins.x    <- format(1:ncol(h), width=wx)
+  borders_x <- format(hist$borders_x, width=wx)  
+  borders_y <- format(hist$borders_y, width=wy)  
+  bins_x    <- format(1:ncol(h), width=wx)
   cat("Frequency table:\n")
   cat(format("Bin Y", width=wy, justify="right"), 
       format("From Y", width=wy, justify="right"), 
-      format("Bin X/From X", width=floor((length(borders.x)*(wx+1)-1)/2), justify="right"), 
-      "\n", sep=" ")
-  cat(rep('-', (wx+1)*length(borders.x)+wy*2+1), "\n", sep='')
+      format("Bin X/From X", width=floor((length(borders_x)*(wx+1)-1)/2), 
+          justify="right"), "\n", sep=" ")
+  cat(rep('-', (wx+1)*length(borders_x)+wy*2+1), "\n", sep='')
   cat(format("", justify="right", width=wy), 
       format("", justify="right", width=wy), 
-      bins.x, "\n", sep=' ')
+      bins_x, "\n", sep=' ')
   cat(format("", justify="right", width=wy), 
       format("", justify="right", width=wy), 
-      borders.x, "\n", sep=' ')
-  cat(rep('-', (wx+1)*length(borders.x)+wy*2+1), "\n", sep='')
+      borders_x, "\n", sep=' ')
+  cat(rep('-', (wx+1)*length(borders_x)+wy*2+1), "\n", sep='')
   for (i in 1:nrow(h)) {
-    cat(format(i, width=wy), borders.y[i], h[i,], "\n", sep=' ')
+    cat(format(i, width=wy), borders_y[i], h[i,], "\n", sep=' ')
   }  
-  cat(format("", width=wy), borders.y[i+1], "\n", sep=' ')
-  cat(rep('-', (wx+1)*length(borders.x)+wy*2+1), "\n", sep='')
+  cat(format("", width=wy), borders_y[i+1], "\n", sep=' ')
+  cat(rep('-', (wx+1)*length(borders_x)+wy*2+1), "\n", sep='')
 
-  underoroverflow <- (sum(hist$underflow$x) + sum(hist$overflow$x) + sum(hist$underflow$y) + sum(hist$overflow$y)) > 0
+  underoroverflow <- (sum(hist$underflow$x) + sum(hist$overflow$x) + 
+      sum(hist$underflow$y) + sum(hist$overflow$y)) > 0
   if (underoroverflow) {
-    cat("\n")
-    cat("Underflow X:", sum(hist$underflow$x), "\n")  
-    cat("          Y:", sum(hist$underflow$y), "\n")  
-    cat("Overflow  X:", sum(hist$overflow$x), "\n")  
-    cat("          Y:", sum(hist$overflow$y), "\n")  
+      cat("\n")
+      cat("Underflow X:", sum(hist$underflow$x), "\n")  
+      cat("          Y:", sum(hist$underflow$y), "\n")  
+      cat("Overflow  X:", sum(hist$overflow$x), "\n")  
+      cat("          Y:", sum(hist$overflow$y), "\n")  
   }
   cat("\n")
 }
