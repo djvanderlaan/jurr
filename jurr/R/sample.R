@@ -1,8 +1,23 @@
 
-# STOCHROUND
-# Stochastische afronding. Een waarde van bijvoorbeeld 10.2 wordt met een kans van 80% afgerond
-# naar 10 en met een kans van 20% naar 11. 
-#
+#' Stochastic rounding
+#' 
+#' @param x the numeric vector that needs rounding
+#'
+#' @details
+#' A value of for example 10.2 is rounded with a probability of 80% to 10 and 
+#' 20% to 11. 
+#'
+#' @return
+#' A vector with rounded values
+#'
+#' @seealso
+#' For other rounding routines: \code{\link{round}}, \code{\link{cumround}}
+#'
+#' @examples
+#' r <- round(rep(10.2, 100))
+#' table(r)
+#'
+#' @export
 stochround <- function(x) {
   result <- floor(x)
   remainder <- x - result
@@ -11,22 +26,53 @@ stochround <- function(x) {
   result
 }
 
-# CUMR
-# Hulpfunctie voor cumulatieve afronding. Verwacht een vector met waarden tussen 0 en 1. Geeft
-# een vector met 0'en en 1'en terug waarvan de som maximaal 1 afwijkt van de som van de 
-# originele vector. 
-#
+#' Helper routine for cumulative rounding
+#'
+#' @param x the numeric vector that needs rounding. The values need to be 
+#'     between 0 and 1.
+#'
+#' @details
+#' Expects a vector with values between 0 and 1. Returns a vector with zeros 
+#' and ones. The sum of this vector differs at most 1 from the sum of the 
+#' original vector.
+#'
+#' @seealso
+#' \code{\link{cumround}}
+#'
+#' @examples
+#' x <- runif(100, 0,1)
+#' y <- cumr(x)
+#' sum(y) - sum(x)
+#'
+#' @export
 cumr <- function(x) {
   r <- cumsum(x) + runif(1, min=0, max=1)
   r <- floor(r);
   diff(c(0, r));
 }
 
-# CUMROUND
-# Cumulatieve afronding. Een vorm van stochastische afronding waarbij gegarandeerd wordt dat
-# het totaal van de afgeronde vector overeenkomt met het totaal van de originele vector
-# (maximaal een verschil van 1). 
-#
+
+#' Cumulative rounding
+#'
+#' @param x the numeric vector that needs rounding
+#' 
+#' @details
+#' A form of stochastic rounding where it is ensured that the sum of the 
+#' rounded vector matches the sum of the original vector (maximum difference
+#' is <1). 
+#'
+#' @result
+#' A rounded vector
+#'
+#' @seealso
+#' For other rounding routines: \code{\link{round}}, \code{\link{stochround}}
+#'
+#' @examples
+#' x <- rnorm(1000, 100, 5)
+#' y <- cumround(x)
+#' sum(x) - sum(y)
+#'
+#' @export
 cumround <- function(x) {
   result <- floor(x)
   result + cumr(x - result)
