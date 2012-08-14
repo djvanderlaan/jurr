@@ -78,20 +78,48 @@ cumround <- function(x) {
   result + cumr(x - result)
 }
 
-# SAMPWOR
-# Trekt een steekproef zonder teruglegging met ongelijke insluitkansen. Gebruikt
-# hiervoor cumulatief afronden
-#
+#' Sample without replacement with unequal probabilities
+#'
+#' @param x vector from which should be sampled
+#' @param n the number of items to sample (should be smaller or equal to the
+#'     number of elements in \code{x})
+#' @param prob vector with probabilities (should be of same length as \code{x})
+#'
+#' @details
+#' Before drawing the probabilies are scaled such that the sum of the 
+#' probabilities equals \code{n}. 
+#'
+#' Cumulative rounding is used to ensure that the number of elements is equal to
+#' n. Elements with a probability larger or equal than one (after scaling) are 
+#' always selected (when this are more than n elements, more then n elements 
+#' are drawn). This proces of scaling and selecting elements with a probability
+#' larger than one is repeated until all probabilites are smaller than one. 
+#' Then a sample is drawn from the remaining elements using cumulative rounding
+#' (see \code{\link{cumr}}).
+#' 
+#' @return
+#' A list with the following elements:
+#' \describe{
+#'   \item{sel}{a logical vector with selected elements}
+#'   \item{w}{the inclusion probabilites of the elements}
+#' }
+#'
+#' @examples
+#' x <- 1:1000
+#' p <- x/1000
+#' s <- sample(x, n=100, prob=p)
+#'
+#' @export
 sampwor <- function(x, n, prob) {
   if (length(prob) != length(x)) stop('Length prob != length x.')
   if (n > length(x)) stop('Sample size n larger than population x.')
-  # schaal prob zodat de som overeenkomt met n
+  # scale prob such that sum equals n
   prob   <- n*prob/sum(prob)
   index  <- 1:length(x)
   index1 <- c();
   index2 <- c();
-  # controleer of er objecten zijn met prob >= 1
-  # verwijder deze; deze worden altijd geselecteerd
+  # check for objects with prob >= 1
+  # remove these; these are always selected
   repeat {
     tmp    <- prob >= 1;
     index1 <- c(index1, index[tmp])
@@ -101,20 +129,20 @@ sampwor <- function(x, n, prob) {
     prob   <- n*prob/sum(prob)
     if (all(prob < 1)) break;
   }
-  # als er nog objecten over zijn: trek de steekproef
+  # when there are elements left; sample
   if (length(prob) > 0) {
     tmp    <- sample(1:length(index));
     prob   <- prob[tmp];
     index  <- index[tmp]
     index2 <- index[cumr(prob) >0]
   }
-  # bepaal welke objecten geselecteerd zijn en de gewichten
+  # determine which elements are selected and their weights
   sel       <- rep(F, length(x))
   sel[c(index1, index2)] <- TRUE
   p         <- rep(NA, length(x))
   p[index1] <- 1
   p[index]  <- prob
-  # klaar
+  # return
   list(sel=sel, p=p)
 }
 
