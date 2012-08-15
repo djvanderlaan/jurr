@@ -181,23 +181,57 @@ inflate <- function(data, weights, permute=FALSE) {
   data[r]
 }
 
-# WBSTR
-# Gewogen bootstrap. Blaast de data eerst op naar de populatie vervolgens wordt hieruit
-# herhaaldelijk steekproeven getrokken met behulp van sampwor. Deze steekproef wordt
-# doorgegeven aan de functie f. wbstr geeft een vector/lijst met de resultaten van de 
-# functie f terug. 
+#' Weighted bootstrap
+#'
+#' @param data \code{data.frame} with data used for bootstrap
+#' @param weights vector with weights (inverse inclusion probability) for each 
+#'     of the rows in the data
+#' @param nbstr number of bootstraps to perform
+#' @param f the function that performs the estimate for each of the bootstraps
+#' @param simplify should the results be simplified to a vector; see 
+#'     \code{\link{sapply}.
+#' @param ... additional arguments are passed on to \code{f}
+#'
+#' First inflates the sample given in \code{data} to the complete population.
+#' Then repeatedly samples are drawn without replacement with probabilities 
+#' equal to 1/\code{weights}. These samples are then passed on to the function 
+#' \code{f}. 
+#'
+#' @return
+#' A list with length \code{nbstr} with the results of the calls to \code{f}.
+#'
+#' @seealso
+#' The package \code{boot} also contains routines for performing bootstraps. 
+#' The \code{survey} package contains routines for obtaining variance estimates
+#' for survey data. 
+#'
+#' @examples
+#' # Create data set
+#' samp <- data.frame(gender=rep(c('M', 'F'), c(1000, 500)),
+#'     length=c(rnorm(1000, 1.85, 0.1), rnorm(500, 1.75, 0.1)),
+#'     weights=c(10000/1000, 10000/500))
+#' # Function to estimate average length
+#' avlength <- function(d, w) {
+#'     sum(d$length*w)/sum(w)
+#' }
+#' avlength(samp, samp$weights)
+#' # Perform bootstrap
+#' br <- wbstr(samp, samp$weights, 25, avlength)
+#' sd(br)
+#' 
+#' @export
 #
-wbstr <- function(data, weights, nbstr, f, ...) {
+wbstr <- function(data, weights, nbstr, f, ..., simplify = TRUE) {
   bst <- function(i, N, n, D) {
     stp  <- sampwor(1:N, n, 1/weights[D]);
     d    <- D[stp$sel];
     d    <- data[d,];
     w    <- 1/stp$p[stp$sel];
-    f(d, ...)
+    f(d, w,  ...)
   }
   n      <- nrow(data);
   D      <- inflate(1:n, weights);
   N      <- length(D);
-  lapply(1:nbstr, bst, N, n, D);
+  sapply(1:nbstr, bst, N, n, D, simplify=TRUE);
 }
 
