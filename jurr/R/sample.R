@@ -61,7 +61,7 @@ cumr <- function(x) {
 #' rounded vector matches the sum of the original vector (maximum difference
 #' is <1). 
 #'
-#' @result
+#' @return
 #' A rounded vector
 #'
 #' @seealso
@@ -146,10 +146,32 @@ sampwor <- function(x, n, prob) {
   list(sel=sel, p=p)
 }
 
-# INFLATE
-# Blaas de vector data op naar de totale populatie gebruik makend van de gewichten gegeven 
-# in weights. Als permute=TRUE dan wordt de data eerst in willekeurige volgorde gezet. 
-#
+
+#' Replicate elements of a vector according to a weights vector
+#'
+#' @param data elements to replicate
+#' @param weights a numeric vector with weights
+#' @param permute put elements in random order before 
+#'
+#' @details
+#' When the weights are integer numbers \code{inflate} does the same as:
+#' \code{\link{rep}(data, weights)}. Cumulative rounding (see 
+#' \code{\link{cumround}} is used to round the weights. Therefore, the output 
+#' dependent on random numbers and repeated calls will generate different 
+#' results.
+#'
+#' @seealso
+#' \code{\link{rep}}, \code{\link{cumround}}
+#' 
+#' @examples
+#' inflate(1:4, weights=1:4+0.5)
+#'
+#' # In expectation inflate repeats each element weight times
+#' mean(replicate(1000, length(inflate(1, 2.5))))
+#' # rep does not
+#' mean(replicate(1000, length(rep(1, 2.5))))
+#'
+#' @export
 inflate <- function(data, weights, permute=FALSE) {
   n <- length(data);
   p <- 1:n
@@ -158,7 +180,6 @@ inflate <- function(data, weights, permute=FALSE) {
   r <- rep(p, w);
   data[r]
 }
-
 
 # WBSTR
 # Gewogen bootstrap. Blaast de data eerst op naar de populatie vervolgens wordt hieruit
