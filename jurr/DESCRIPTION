@@ -12,3 +12,4 @@ Collate:
     'histw.R'
     'sample.R'
     'jurr.R'
+    'plot_var.R'
