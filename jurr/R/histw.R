@@ -250,6 +250,7 @@ project <- function(hist, dimension) {
 #' @param ... additional arguments are passed on to \code{\link{histplot}}
 #'
 #' @S3method plot histw
+#' @export
 plot.histw <- function(hist, ...) {
   histplot(hist$borders, hist$h, ...)
 }
@@ -260,6 +261,7 @@ plot.histw <- function(hist, ...) {
 #' @param ... additional arguments are passed on to \code{\link{histplot2}}
 #'
 #' @S3method plot histw2
+#' @export
 plot.histw2 <- function(hist, ...) {
   histplot2(hist$h, borders_x=hist$borders_x, borders_y=hist$borders_y, ...)
 }
@@ -267,6 +269,7 @@ plot.histw2 <- function(hist, ...) {
 #' Print histogram created by \code{\link{histw}}
 #'
 #' @S3method print histw
+#' @export
 print.histw <- function(hist) {
   w       <- 15
   h       <- format(hist$h, width=w)
@@ -291,6 +294,7 @@ print.histw <- function(hist) {
 #' Print histogram created by \code{\link{histw2}}
 #'
 #' @S3method print histw2
+#' @export
 print.histw2 <- function(hist) {
   wy        <- 15
   wx        <- max(nchar(format(hist$h)), nchar(format(hist$borders_x)))  
