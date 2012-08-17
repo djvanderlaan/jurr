@@ -1,5 +1,5 @@
-jurr
-====
+`jurr` : Jan's useful R routines
+================================
 
 
 
