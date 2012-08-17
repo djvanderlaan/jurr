@@ -189,9 +189,10 @@ inflate <- function(data, weights, permute=FALSE) {
 #' @param nbstr number of bootstraps to perform
 #' @param f the function that performs the estimate for each of the bootstraps
 #' @param simplify should the results be simplified to a vector; see 
-#'     \code{\link{sapply}.
+#'     \code{\link{sapply}}.
 #' @param ... additional arguments are passed on to \code{f}
 #'
+#' @details
 #' First inflates the sample given in \code{data} to the complete population.
 #' Then repeatedly samples are drawn without replacement with probabilities 
 #' equal to 1/\code{weights}. These samples are then passed on to the function 
