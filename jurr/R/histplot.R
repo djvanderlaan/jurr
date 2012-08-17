@@ -12,7 +12,7 @@
 #'     is includes in the plot
 #' @param border color of the border of the bars
 #' @param sep whether or not the borders should be drawn between the bars
-#' @param ... additional arguments are passed on to \code{\link{polygon}}.
+#' @param ... additional arguments are passed on to \code{\link{plot}}.
 #'
 #' @seealso \code{\link{hist}}
 #' 
@@ -29,9 +29,9 @@ histplot <- function(borders, h, add=FALSE, col="black", zero=0,
     y <- c(zero, rep(h, each=2), zero)
     if (add == FALSE) {
         if (force_zero) {
-            plot(x, y, type='n', ylim=c(zero, max(y)*1.04), yaxs='i')
+            plot(x, y, type='n', ylim=c(zero, max(y)*1.04), yaxs='i', ...)
         } else {
-            plot(x, y, type='n')
+            plot(x, y, type='n', ...)
         }
     }
     if (sep) {
@@ -49,9 +49,9 @@ histplot <- function(borders, h, add=FALSE, col="black", zero=0,
             rep(0, length(borders)-1),
             rep(0, length(borders)-1),
             rep(NA, length(borders)-1)),
-          col=col, border=border, ...)
+          col=col, border=border)
     } else {
-        polygon(x, y, col=col, border=border, ...)
+        polygon(x, y, col=col, border=border)
     }
     abline(zero, 0)
 }
