@@ -246,61 +246,67 @@ project <- function(hist, dimension) {
 
 #' Plot histogram created by \code{histw}
 #'
-#' @param hist an object of type \code{\link{histw}}
+#' @param x an object of type \code{\link{histw}}
 #' @param ... additional arguments are passed on to \code{\link{histplot}}
 #'
 #' @S3method plot histw
 #' @export
-plot.histw <- function(hist, ...) {
-  histplot(hist$borders, hist$h, ...)
+plot.histw <- function(x, ...) {
+  histplot(x$borders, x$h, ...)
 }
 
 #' Plot histogram created by \code{histw2}
 #'
-#' @param hist an object of type \code{\link{histw2}}
+#' @param x an object of type \code{\link{histw2}}
 #' @param ... additional arguments are passed on to \code{\link{histplot2}}
 #'
 #' @S3method plot histw2
 #' @export
-plot.histw2 <- function(hist, ...) {
-  histplot2(hist$h, borders_x=hist$borders_x, borders_y=hist$borders_y, ...)
+plot.histw2 <- function(x, ...) {
+  histplot2(x$h, borders_x=x$borders_x, borders_y=x$borders_y, ...)
 }
 
 #' Print histogram created by \code{\link{histw}}
+#' 
+#' @param x an object of type \code{\link{histw}}
+#' @param ... additional arguments are ignored
 #'
 #' @S3method print histw
 #' @export
-print.histw <- function(hist) {
+print.histw <- function(x, ...) {
   w       <- 15
-  h       <- format(hist$h, width=w)
-  borders <- format(hist$borders, width=w)
+  h       <- format(x$h, width=w)
+  borders <- format(x$borders, width=w)
   cat("Frequency table:\n")
   cat(format("Bin", width=w, justify="right"), 
       format("From", width=w, justify="right"), 
       format("To", width=w, justify="right"), 
       format("Count", width=w, justify="right"), 
       "\n", sep="")
-  for (i in 1:length(hist$h)) {
+  for (i in 1:length(x$h)) {
     cat(format(i, width=w), borders[i], borders[i+1], h[i], "\n", sep="")
   }
-  if (hist$underflow != 0 || hist$overflow != 0) {  
+  if (x$underflow != 0 || x$overflow != 0) {  
     cat("\n")
-    cat("Underflow:", hist$underflow, "\n")  
-    cat("Overflow: ", hist$underflow, "\n")  
+    cat("Underflow:", x$underflow, "\n")  
+    cat("Overflow: ", x$underflow, "\n")  
   }  
   cat("\n")
 }
 
 #' Print histogram created by \code{\link{histw2}}
 #'
+#' @param x an object of type \code{\link{histw2}}
+#' @param ... additional arguments are ignored
+#'
 #' @S3method print histw2
 #' @export
-print.histw2 <- function(hist) {
+print.histw2 <- function(x, ...) {
   wy        <- 15
-  wx        <- max(nchar(format(hist$h)), nchar(format(hist$borders_x)))  
-  h         <- format(hist$h, width=wx)
-  borders_x <- format(hist$borders_x, width=wx)  
-  borders_y <- format(hist$borders_y, width=wy)  
+  wx        <- max(nchar(format(x$h)), nchar(format(x$borders_x)))  
+  h         <- format(x$h, width=wx)
+  borders_x <- format(x$borders_x, width=wx)  
+  borders_y <- format(x$borders_y, width=wy)  
   bins_x    <- format(1:ncol(h), width=wx)
   cat("Frequency table:\n")
   cat(format("Bin Y", width=wy, justify="right"), 
@@ -321,14 +327,14 @@ print.histw2 <- function(hist) {
   cat(format("", width=wy), borders_y[i+1], "\n", sep=' ')
   cat(rep('-', (wx+1)*length(borders_x)+wy*2+1), "\n", sep='')
 
-  underoroverflow <- (sum(hist$underflow$x) + sum(hist$overflow$x) + 
-      sum(hist$underflow$y) + sum(hist$overflow$y)) > 0
+  underoroverflow <- (sum(x$underflow$x) + sum(x$overflow$x) + 
+      sum(x$underflow$y) + sum(x$overflow$y)) > 0
   if (underoroverflow) {
       cat("\n")
-      cat("Underflow X:", sum(hist$underflow$x), "\n")  
-      cat("          Y:", sum(hist$underflow$y), "\n")  
-      cat("Overflow  X:", sum(hist$overflow$x), "\n")  
-      cat("          Y:", sum(hist$overflow$y), "\n")  
+      cat("Underflow X:", sum(x$underflow$x), "\n")  
+      cat("          Y:", sum(x$underflow$y), "\n")  
+      cat("Overflow  X:", sum(x$overflow$x), "\n")  
+      cat("          Y:", sum(x$overflow$y), "\n")  
   }
   cat("\n")
 }

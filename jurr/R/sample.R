@@ -107,7 +107,7 @@ cumround <- function(x) {
 #' @examples
 #' x <- 1:1000
 #' p <- x/1000
-#' s <- sample(x, n=100, prob=p)
+#' s <- sample(x, size=100, prob=p)
 #'
 #' @export
 sampwor <- function(x, n, prob) {
