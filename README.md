@@ -20,3 +20,24 @@ Plotting routines
 - [`linesby`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/plot_var.R): 
   plot a line for each level of a factor  
   ![linesby example](http://github.com/djvanderlaan/jurr/raw/master/examples/linesby.png)
+
+
+Statistical routines
+--------------------
+
+- [`histw`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/histw.R): 
+  Weighted histogram
+- [`histw2`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/histw.R): 
+  Weighted two-dimensional histogram
+- [`stochround`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/sample.R): 
+  Stochastical rounding: a value of 11.2 is rounded with a probability of 20%
+  to 12 and with a probability of 80% to 11. 
+- [`cumround`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/sample.R): 
+  Cumulative rounding: ensures that the sum of the rounded figures differs less
+  than one from the unrounded figures.
+- [`sampwor`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/sample.R): 
+  Sampling without replacement with unequal probabilities
+- [`wbstr`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/sample.R): 
+  Weighted bootstrap for finite population
+
+
