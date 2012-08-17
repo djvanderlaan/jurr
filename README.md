@@ -3,7 +3,7 @@
 
 A small collection of personal routines that I kept on using in different 
 projects. In order to make reuse a little bit easier, I bundled them in a 
-package. 
+package. Below is an overview of most of the routines.
 
 
 Plotting routines
