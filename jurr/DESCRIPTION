@@ -1,12 +1,12 @@
 Package: jurr
 Type: Package
-Title: What the package does (short line)
+Title: Jan's useful R routines
 Version: 0.1
 Date: 2012-08-03
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: djvanderlaan@unrealizedtime.nl
+Maintainer: Jan van der Laan <djvanderlaan@unrealizedtime.nl>
+Description: A collection of various R routines
+License: GPL-3
 Collate:
     'histplot.R'
     'histw.R'
