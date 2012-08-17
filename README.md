@@ -1,6 +1,9 @@
 `jurr` : Jan's useful R routines
 ================================
 
+A small collection of personal routines that I kept on using in different 
+projects. In order to make reuse a little bit easier, I bundled them in a 
+package. 
 
 
 Plotting routines
@@ -25,7 +28,7 @@ Plotting routines
 Statistical routines
 --------------------
 
-- [`histw`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/histw.R): 
+- [`histw`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/histw.R):
   Weighted histogram
 - [`histw2`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/histw.R): 
   Weighted two-dimensional histogram
