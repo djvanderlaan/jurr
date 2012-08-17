@@ -6,7 +6,7 @@ jurr
 Plotting routines
 -----------------
 
-- `add_alpha`: add an alpha channel to a colour
+- [`add_alpha`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/plot_var.R): add an alpha channel to a colour
 - `histplot`: plot a histogram   
   ![histplot example](http://github.com/djvanderlaan/jurr/raw/master/examples/histplot.png)
 - `histplot2`: plot a two dimensional histogram; offers three visualisation 
