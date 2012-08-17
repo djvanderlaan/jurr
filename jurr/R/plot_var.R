@@ -6,6 +6,9 @@
 #' @param y y-coordinates of points to join with line
 #' @param by vector (converted to factor) defining the groups for which the 
 #'     lines should be drawn.
+#' @param col line colors these are recycled over the levels of \code{by}
+#' @param lty line types these are recycled over the levels of \code{by}
+#' @param lwd line widths these are recycled over the levels of \code{by}
 #' @param ... additional arguments are passed on to \code{\link{lines}}
 #'
 #' @details
@@ -19,14 +22,18 @@
 #' linesby(x, y, x, col="steelblue")
 #'
 #' @export
-linesby <- function(x, y, by, ...) {
+linesby <- function(x, y, by, col = "black", lty = 1, lwd = 1, ...) {
     by   <- as.factor(by)
     lvls <- levels(by)
-    for (lvl in lvls) {
+    col  <- rep(col, length.out = nlevels(by))
+    lty  <- rep(lty, length.out = nlevels(by))
+    lwd  <- rep(lwd, length.out = nlevels(by))
+    for (i in seq_along(lvls)) {
+        lvl  <- lvls[i]
         xlvl <- x[by == lvl]
         ylvl <- y[by == lvl]
         o    <- order(xlvl)
-        lines(xlvl[o], ylvl[o], ...)
+        lines(xlvl[o], ylvl[o], col=col[i], lwd=lwd[i], lty=lty[i], ...)
     }
 }
 
