@@ -1,5 +1,4 @@
 
-
 #' Draw lines for groups
 #' 
 #' @param x x-coordinates of points to join with line
@@ -60,6 +59,57 @@ add_alpha <- function(col, alpha) {
         })
     }
     return(res)
+}
+
+#' Generate a color palette for categorical variables using \code{\link{hcl}}
+#'
+#' @par n size of the palette; number of colors to generate.
+#' @par ordered if FALSE the distance between subsequent colors is choosen as
+#'   large as possible. If true the colors follow the color wheel.
+#' @par offset the starting position on the color wheel; the hue. This 
+#'   determines the first color. The default value of 40 generates an orangy 
+#'   color. The value should be between 0 and 360. 
+#' @par c The chroma of the colors; see \code{\link{hcl}}.
+#' @par l The luminance of the colors; see \code{\link{hcl}}.
+#' @par alpha The transparency of the colors; see \code{\link{hcl}}. This 
+#'   should be a value between 0 (=tranparent) and 1 (=opaque). 
+#' @par plot If TRUE a plot is generated showing the palette. 
+#'
+#' @examples
+#' hcl_palette(10, plot = TRUE)
+#'
+#' @export
+hcl_palette <- function(n, ordered = FALSE, offset=40, 
+        c = 150, l = 60, alpha = NULL, plot = FALSE) {
+    if (ordered) {
+        pal  <- seq_len(n) - 1
+    } else {
+        pal  <- 0
+        p    <- 0
+        step <- min(4, n/2)
+        for (i in seq_len(n-1)) {
+            p <- floor(p + step) %% n
+            while (p %in% pal) {
+              p <- (p + 1) %% n
+            }
+            pal <- c(pal, p)
+        }
+    }
+    h <- (pal * 360/n + offset) %% 360
+    if (is.null(alpha)) {
+        pal <- hcl(h=h, c=c, l=l)
+    } else {
+        pal <- hcl(h=h, c=c, l=l, alpha = alpha)
+    }
+    if (plot) {
+        plot(0, 0, xlim=c(0,1), ylim=c(0, n), type='n', bty='n', xaxt='n', 
+            yaxt='n', xlab='', ylab='', xaxs='i', yaxs='i')
+        axis(2, at=seq_len(n) - 0.5, labels=1:n, las=2, lwd=0, lwd.ticks=1)
+        rect(rep(0, n), seq(0, n-1), rep(1, n), seq(1, n), 
+            col=pal, border=NA)
+        text(0.5, 1:n-0.5, pal)
+    }
+    pal
 }
 
     
