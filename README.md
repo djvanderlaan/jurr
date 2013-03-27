@@ -11,6 +11,9 @@ Plotting routines
 
 - [`add_alpha`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/plot_var.R): 
   add an alpha channel to a colour
+- [`hcl_palette`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/plot_var.R): 
+  create color palette for categorical variables using hcl
+  ![palette example](http://github.com/djvanderlaan/jurr/raw/master/examples/hcl_palette.png)
 - [`histplot`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/histplot.R): 
   plot a histogram   
   ![histplot example](http://github.com/djvanderlaan/jurr/raw/master/examples/histplot.png)

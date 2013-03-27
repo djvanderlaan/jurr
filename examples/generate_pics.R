@@ -6,6 +6,10 @@ WIDTH  <- 500
 HEIGHT <- 400
 IMG    <- TRUE
 
+# ================================= HCL_PALETTE ===============================
+if (IMG) png("hcl_palette.png", width=WIDTH, height=HEIGHT)
+hcl_palette(10, plot = TRUE)
+if (IMG) dev.off()
 
 # ================================= HISTPLOT2 =================================
 n <- 1000

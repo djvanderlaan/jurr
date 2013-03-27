@@ -63,17 +63,17 @@ add_alpha <- function(col, alpha) {
 
 #' Generate a color palette for categorical variables using \code{\link{hcl}}
 #'
-#' @par n size of the palette; number of colors to generate.
-#' @par ordered if FALSE the distance between subsequent colors is choosen as
+#' @param n size of the palette; number of colors to generate.
+#' @param ordered if FALSE the distance between subsequent colors is choosen as
 #'   large as possible. If true the colors follow the color wheel.
-#' @par offset the starting position on the color wheel; the hue. This 
+#' @param offset the starting position on the color wheel; the hue. This 
 #'   determines the first color. The default value of 40 generates an orangy 
 #'   color. The value should be between 0 and 360. 
-#' @par c The chroma of the colors; see \code{\link{hcl}}.
-#' @par l The luminance of the colors; see \code{\link{hcl}}.
-#' @par alpha The transparency of the colors; see \code{\link{hcl}}. This 
+#' @param c The chroma of the colors; see \code{\link{hcl}}.
+#' @param l The luminance of the colors; see \code{\link{hcl}}.
+#' @param alpha The transparency of the colors; see \code{\link{hcl}}. This 
 #'   should be a value between 0 (=tranparent) and 1 (=opaque). 
-#' @par plot If TRUE a plot is generated showing the palette. 
+#' @param plot If TRUE a plot is generated showing the palette. 
 #'
 #' @examples
 #' hcl_palette(10, plot = TRUE)

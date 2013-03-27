@@ -1,6 +1,7 @@
 export(add_alpha)
 export(cumr)
 export(cumround)
+export(hcl_palette)
 export(histplot)
 export(histplot2)
 export(histw)
