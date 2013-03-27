@@ -13,8 +13,7 @@ Plotting routines
   add an alpha channel to a colour
 - [`hcl_palette`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/plot_var.R): 
   create color palette for categorical variables using hcl. The example below shows a 
-  generated palette using 10 colours:
-
+  generated palette using 10 colours:   
   ![palette example](http://github.com/djvanderlaan/jurr/raw/master/examples/hcl_palette.png)
 - [`histplot`](https://github.com/djvanderlaan/jurr/blob/master/jurr/R/histplot.R): 
   plot a histogram   
